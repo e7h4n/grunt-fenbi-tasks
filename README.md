@@ -1,6 +1,6 @@
 # grunt-fenbi-tasks
 
-Fenbi grunt tasks. To build handlebars template, combine [SeaJS] modules, generate jsctags, etc.
+Grunt tasks used by [fenbi.com]. To build handlebars template, combine [SeaJS] modules, generate jsctags, etc.
 
 ## Getting Started
 Install the module with: `npm install grunt-fenbi-tasks`
@@ -84,3 +84,6 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 ## License
 Copyright (c) 2012 PerfectWorks  
 Licensed under the MIT license.
+
+[fenbi.com]: http://fenbi.com
+[SeaJS]: http://seajs.org
