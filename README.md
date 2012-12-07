@@ -1,6 +1,6 @@
 # grunt-fenbi-tasks
 
-Grunt tasks used by [fenbi.com]. To build handlebars template, combine [SeaJS] modules, generate jsctags, etc.
+Grunt tasks used by [fenbi.com]. To build handlebars template, combine [SeaJS] modules, generate jsctags, hash file, etc.
 
 ## Getting Started
 This is an internal task set used by [fenbi.com], read each source before use it.
@@ -24,8 +24,8 @@ grunt.initConfig({
         }
     },
 
-    cdn: {
-        test: {
+    hash: {
+        release: {
             src: TEMP_BUILD,
             dest: TARGET_RELEASE,
             urlPrefix: '/s/',
@@ -33,7 +33,7 @@ grunt.initConfig({
             staticMap: TARGET + 'WEB-INF/view/global/StaticMap.vm'
         },
 
-        production: {
+        cdn: {
             src: TEMP_BUILD,
             dest: TARGET + 's/',
             urlPrefix: '//cdn.yuanti.ku/s/',
@@ -81,6 +81,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+`0.1.3` 2012-12-07 Rename task `cdn` to `hash`.
 `0.1.2` 2012-12-07 Fix combo bug, modify README.md.
 `0.1.0` 2012-12-06 First release.
 

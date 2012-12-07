@@ -1,5 +1,5 @@
 /*
- * cdn.js
+ * hash.js
  *
  * Copyright (c) 2012 "PerfectWorks" Ethan Zhang
  * Licensed under the MIT license.
@@ -23,7 +23,7 @@ module.exports = function (grunt) {
         return fileHash;
     }
 
-    grunt.registerMultiTask('cdn', 'Generate cdn static files.', function () {
+    grunt.registerMultiTask('hash', 'Rename static files to hash name.', function () {
         var data = this.data;
         var src = data.src;
         var files = data.files.forEach ? data.files : [data.files];
