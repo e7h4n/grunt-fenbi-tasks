@@ -156,7 +156,7 @@ module.exports = function (grunt) {
             depsQueue = depsQueue.sort();
             depsQueue.push(modName);
             var finalCode = depsQueue.reduce(function (memo, modName) {
-                return memo + modules[modName] + '\n';
+                return memo + modules[modName];
             }, grunt.file.read(src + loader));
 
             var outputfile = jsFile.replace(src, dest);
@@ -172,7 +172,7 @@ module.exports = function (grunt) {
             });
 
             var vendor = vendors.reduce(function (memo, vendor) {
-                return memo + readModule('vendor/' + vendor);
+                return memo + readModule('vendor/' + vendor) + ';';
             }, '');
             grunt.file.write(outputfile.replace(/\.js/, '.vendor.js'), vendor);
         });

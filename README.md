@@ -3,6 +3,8 @@
 Grunt tasks used by [fenbi.com]. To build handlebars template, combine [SeaJS] modules, generate jsctags, etc.
 
 ## Getting Started
+This is an internal task set used by [fenbi.com], read each source before use it.
+
 Install the module with: `npm install grunt-fenbi-tasks`
 
 ```javascript
@@ -79,6 +81,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+`0.1.2` 2012-12-07 Fix combo bug, modify README.md.
 `0.1.0` 2012-12-06 First release.
 
 ## License
