@@ -57,6 +57,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+`0.1.6` 2013-01-05 Add `minimize` task with source map support, and add source map support to `hash` task.
 `0.1.5` 2012-12-18 Move `handlebars` to `grunt-handlebars-seajs` task.
 `0.1.3` 2012-12-07 Rename task `cdn` to `hash`.
 `0.1.2` 2012-12-07 Fix combo bug, modify README.md.

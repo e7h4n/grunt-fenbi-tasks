@@ -36,6 +36,10 @@ module.exports = function (grunt) {
         };
 
         var processedFile = _.memoize(function (fileAbsPath) {
+            if (['.map'].indexOf(path.extname(fileAbsPath)) !== -1) {
+                return processedFile(fileAbsPath.replace(/\.map$/, '')) + '.map';
+            }
+
             if (['.css'].indexOf(path.extname(fileAbsPath)) === -1) {
                 return hashFile(fileAbsPath);
             }
@@ -72,8 +76,25 @@ module.exports = function (grunt) {
                 hashList[filePath.replace(src, '')] = hash;
 
                 var output = dest + hash;
-                grunt.file.copy(filePath, output);
                 grunt.log.writeln('File ' + output.cyan + ' <-> ' + filePath.cyan + '.');
+
+                if (['.map', '.js', '.css'].indexOf(path.extname(filePath)) === -1) {
+                    grunt.file.copy(filePath, output);
+                    return;
+                }
+
+                var content = grunt.file.read(filePath);
+
+                if (path.extname(filePath) === '.map') {
+                    var map = JSON.parse(content);
+                    map.file = getStaticUrl(hash.replace(/\.map$/, ''));
+                    content = JSON.stringify(map);
+                } else {
+                    content = content.replace(/sourceMappingURL=([a-zA-Z0-9\.\-_\/\\]*)/g, function ($0, $1) {
+                        return 'sourceMappingURL=' + hash + '.map';
+                    });
+                }
+                grunt.file.write(output, content);
             });
 
             grunt.file.write(staticMap, '#set($staticFileMap = ' + JSON.stringify(hashList) + ')');
