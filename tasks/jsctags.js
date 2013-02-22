@@ -14,6 +14,16 @@ module.exports = function (grunt) {
     var _ = require('underscore');
     var fs = require('fs');
 
+    function expandFiles(param) {
+        if (grunt.file.expand) {
+            return grunt.file.expand({
+                filter: 'isFile'
+            }, param);
+        }
+
+        return grunt.file.expandFiles(param);
+    }
+
     grunt.registerMultiTask('jsctags', 'Generate jsctags.', function () {
         var done = this.async();
 
@@ -22,7 +32,7 @@ module.exports = function (grunt) {
             return root + file;
         });
 
-        files = grunt.file.expandFiles(files);
+        files = expandFiles(files);
 
         var exec = require('child_process').exec;
         var command = grunt.template.process('jsctags -L <%=root%> <%=files%>', {

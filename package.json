@@ -1,7 +1,7 @@
 {
     "name": "grunt-fenbi-tasks",
     "description": "Grunt tasks used by fenbi.com.",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "homepage": "https://github.com/perfectworks/grunt-fenbi-tasks",
 
     "author": {

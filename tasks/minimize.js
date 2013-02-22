@@ -14,13 +14,23 @@ module.exports = function (grunt) {
     var UglifyJS = require('uglify-js');
     var gzip = require('gzip-js');
 
+    function expandFiles(param) {
+        if (grunt.file.expand) {
+            return grunt.file.expand({
+                filter: 'isFile'
+            }, param);
+        }
+
+        return grunt.file.expandFiles(param);
+    }
+
     grunt.registerMultiTask('minimize', 'Minimize JavaScript files.', function () {
         var data = this.data;
         var src = data.src;
         var dest = data.dest;
 
         this.data.files.forEach(function (file) {
-            grunt.file.expandFiles(src + file).forEach(function (filePath) {
+            expandFiles(src + file).forEach(function (filePath) {
                 var outputPath = filePath.replace(src, dest);
 
                 var mapFile = filePath + '.map';

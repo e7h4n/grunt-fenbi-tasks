@@ -12,6 +12,16 @@ module.exports = function (grunt) {
     var path = require('path');
     var _ = require('underscore');
 
+    function expandFiles(param) {
+        if (grunt.file.expand) {
+            return grunt.file.expand({
+                filter: 'isFile'
+            }, param);
+        }
+
+        return grunt.file.expandFiles(param);
+    }
+
     function hashFile(filePath, content) {
         content = content || grunt.file.read(filePath);
 
@@ -70,7 +80,7 @@ module.exports = function (grunt) {
 
         var hashList = {};
         files.forEach(function (file) {
-            grunt.file.expandFiles(src + file).forEach(function (filePath) {
+            expandFiles(src + file).forEach(function (filePath) {
                 var hash = processedFile(path.resolve(filePath));
 
                 hashList[filePath.replace(src, '')] = hash;
