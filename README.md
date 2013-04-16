@@ -57,6 +57,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+`0.1.8` 2013-04-16 Fix data uri in hash task.
 `0.1.7` 2013-01-05 Support grunt 0.4.0.
 `0.1.6` 2013-01-05 Add `minimize` task with source map support, and add source map support to `hash` task.
 `0.1.5` 2012-12-18 Move `handlebars` to `grunt-handlebars-seajs` task.

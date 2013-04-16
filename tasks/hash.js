@@ -61,6 +61,10 @@ module.exports = function (grunt) {
             var fileContent = grunt.file.read(fileAbsPath);
 
             var newFileContent = fileContent.replace(urlReg, function ($0, $1, includePath, $3) {
+                if (includePath.indexOf('data:') === 0) {
+                    return $0;
+                }
+
                 grunt.verbose.writeln('Found file include: ' + includePath);
 
                 if (includePath.charAt(0) === '/') {
