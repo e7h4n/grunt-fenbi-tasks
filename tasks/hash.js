@@ -12,47 +12,33 @@ module.exports = function (grunt) {
     var path = require('path');
     var _ = require('underscore');
 
-    function expandFiles(param) {
-        if (grunt.file.expand) {
-            return grunt.file.expand({
-                filter: 'isFile'
-            }, param);
-        }
-
-        return grunt.file.expandFiles(param);
-    }
-
     function hashFile(filePath, content) {
         content = content || grunt.file.read(filePath);
 
         var crypto = require('crypto');
         var fileHash = crypto.createHash('sha1').update(content).digest('hex');
         fileHash = fileHash.substr(0, 8);
-        fileHash += path.extname(filePath);
 
-        return fileHash;
+        return fileHash + '-' + path.basename(filePath);
     }
 
     grunt.registerMultiTask('hash', 'Rename static files to hash name.', function () {
-        var data = this.data;
-        var src = data.src;
-        var files = data.files.forEach ? data.files : [data.files];
-        var dest = data.dest;
-        var urlPrefix = data.urlPrefix;
-        var staticMap = data.staticMap;
+        var options = this.options();
+        var urlPrefix = options.urlPrefix;
+        var staticMap = options.staticMap;
+        var staticJSON = options.staticJSON;
+        var root = options.root;
 
         var getStaticUrl = function (hash) {
             return urlPrefix + hash;
         };
 
         var processedFile = _.memoize(function (fileAbsPath) {
-            if (['.map'].indexOf(path.extname(fileAbsPath)) !== -1) {
-                return processedFile(fileAbsPath.replace(/\.map$/, '')) + '.map';
-            }
-
             if (['.css'].indexOf(path.extname(fileAbsPath)) === -1) {
                 return hashFile(fileAbsPath);
             }
+
+            // process css include image path
 
             /*jslint regexp: true*/
             var urlReg = /url\((['"]?)(.+?)(['"]?)\)/g;
@@ -68,7 +54,7 @@ module.exports = function (grunt) {
                 grunt.verbose.writeln('Found file include: ' + includePath);
 
                 if (includePath.charAt(0) === '/') {
-                    includePath = path.resolve(src, includePath);
+                    includePath = path.resolve(root, includePath);
                 } else {
                     includePath = path.resolve(path.dirname(fileAbsPath), includePath);
                 }
@@ -83,36 +69,28 @@ module.exports = function (grunt) {
         });
 
         var hashList = {};
-        files.forEach(function (file) {
-            expandFiles(src + file).forEach(function (filePath) {
-                var hash = processedFile(path.resolve(filePath));
 
-                hashList[filePath.replace(src, '')] = hash;
+        this.files.forEach(function (file) {
+            var filePath = file.src[0];
+            var dest = path.normalize(file.orig.dest);
 
-                var output = dest + hash;
-                grunt.log.writeln('File ' + output.cyan + ' <-> ' + filePath.cyan + '.');
+            var hash = processedFile(path.resolve(filePath));
 
-                if (['.map', '.js', '.css'].indexOf(path.extname(filePath)) === -1) {
-                    grunt.file.copy(filePath, output);
-                    return;
-                }
+            hashList[filePath.replace(root, '')] = hash;
 
-                var content = grunt.file.read(filePath);
+            var output = dest + hash;
+            grunt.log.writeln('File ' + output.cyan + ' <-> ' + filePath.cyan + '.');
 
-                if (path.extname(filePath) === '.map') {
-                    var map = JSON.parse(content);
-                    map.file = getStaticUrl(hash.replace(/\.map$/, ''));
-                    content = JSON.stringify(map);
-                } else {
-                    content = content.replace(/sourceMappingURL=([a-zA-Z0-9\.\-_\/\\]*)/g, function ($0, $1) {
-                        return 'sourceMappingURL=' + hash + '.map';
-                    });
-                }
-                grunt.file.write(output, content);
-            });
-
-            grunt.file.write(staticMap, '#set($staticFileMap = ' + JSON.stringify(hashList) + ')');
+            grunt.file.copy(filePath, output);
         });
+
+        if (staticMap) {
+            grunt.file.write(staticMap, '#set($staticFileMap = ' + JSON.stringify(hashList) + ')');
+        }
+
+        if (staticJSON) {
+            grunt.file.write(staticJSON, JSON.stringify(hashList));
+        }
 
         if (this.errorCount) {
             return false;

@@ -1,42 +1,42 @@
 {
-    "name": "grunt-fenbi-tasks",
-    "description": "Grunt tasks used by fenbi.com.",
-    "version": "0.1.8",
-    "homepage": "https://github.com/perfectworks/grunt-fenbi-tasks",
-
-    "author": {
-        "name": "PerfectWorks",
-        "email": "perfectworks@gmail.com",
-        "url": "http://lostjs.com"
-    },
-
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/perfectworks/grunt-fenbi-tasks.git"
-    },
-
-    "bugs": {
-        "url": "https://github.com/perfectworks/grunt-fenbi-tasks/issues"
-    },
-
-    "licenses": [{
-        "type": "MIT",
-        "url": "https://github.com/perfectworks/grunt-fenbi-tasks/blob/master/LICENSE-MIT"
-    }],
-
-    "engines": {
-        "node": ">= 0.6.0"
-    },
-
-    "devDependencies": {
-        "grunt": "~0.3.17"
-    },
-
-    "keywords": ["gruntplugin"],
-
-    "dependencies": {
-        "underscore": "*",
-        "uglify-js": "*",
-        "gzip-js": "*"
+  "name": "grunt-fenbi-tasks",
+  "description": "Grunt tasks used by fenbi.com.",
+  "version": "1.0.0",
+  "homepage": "https://github.com/perfectworks/grunt-fenbi-tasks",
+  "author": {
+    "name": "PerfectWorks",
+    "email": "perfectworks@gmail.com",
+    "url": "http://lostjs.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/perfectworks/grunt-fenbi-tasks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/perfectworks/grunt-fenbi-tasks/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/perfectworks/grunt-fenbi-tasks/blob/master/LICENSE-MIT"
     }
+  ],
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2"
+  },
+  "keywords": [
+    "gruntplugin"
+  ],
+  "dependencies": {
+    "underscore": "*",
+    "uglify-js": "*",
+    "gzip-js": "*",
+    "json2css": "~3.0.0",
+    "mustache": "~0.7.2",
+    "q": "~0.9.4",
+    "gm": "~1.9.1"
+  }
 }
