@@ -1,5 +1,6 @@
 .{{options.className}} {
-    background: url('{{{options.image}}}') no-repeat;
+    background-image: url('{{{options.image}}}');
+    background-repeat: no-repeat;
 }
 
 {{#items}}
@@ -17,7 +18,7 @@
   only screen and (max-width: 780px) and (min-device-pixel-ratio: 1.5) {
 
     .{{options.className}} {
-        background: url('{{{options.image2x}}}') no-repeat;
+        background-image: url('{{{options.image2x}}}');
         background-size: {{options.bgWidth}}px {{options.bgHeight}}px;
     }
 }
