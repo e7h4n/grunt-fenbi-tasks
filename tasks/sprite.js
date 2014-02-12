@@ -11,13 +11,15 @@
 module.exports = function (grunt) {
     var json2css = require('json2css');
     var path = require('path');
-    var q = require('q');
     var gm = require('gm');
+    var q = require('q');
 
     grunt.registerMultiTask('spriteJsonToLess', 'Generate sprite less from json.', function () {
-        var options = this.options();
+        var done = this.async();
 
-        this.files.forEach(function (file) {
+        var promises = this.files.map(function (file) {
+            var defer = q.defer();
+
             var jsonFile = file.src[0];
             var json = JSON.parse(grunt.file.read(jsonFile));
 
@@ -34,67 +36,20 @@ module.exports = function (grunt) {
             }
 
             json2css.addTemplate('production', require('../lib/lessTemplate/production'));
-            var less = json2css(json, {
-                format: 'production',
-                formatOpts: {
-                    image: image,
-                    className: className,
-                    cssClass: function (item) {
-                        return '.' + item.name;
-                    }
-                }
-            });
+            var imageFilePath = path.resolve(path.dirname(jsonFile), path.basename(json[Object.keys(json)[0]].image));
+            imageFile = gm(imageFilePath);
 
-            grunt.file.write(file.dest, less);
-            grunt.log.writeln('Sprite less ' + file.dest.cyan + ' created.');
-        });
-    });
-
-    grunt.registerMultiTask('spriteToLess', 'Generate sprite less from images.', function () {
-        var options = this.options();
-        var done = this.async();
-
-        function getImageSize(image) {
-            var deferred = q.defer();
-
-            gm(image).size(function (err, value) {
+            imageFile.size(function (err, size) {
                 if (err) {
-                    deferred.reject(err);
-                    return;
+                    return defer.reject(err);
                 }
 
-                deferred.resolve({
-                    image: image,
-                    value: value
-                });
-            });
-            return deferred.promise;
-        }
-
-        var filePromises = this.files.map(function (file) {
-            var deferred = q.defer();
-
-            var spriteDirectory = file.src[0];
-            var images = grunt.file.expand(path.join(spriteDirectory, '**/*.png'));
-
-            q.all(images.map(getImageSize)).then(function (ret) {
-                var json = ret.map(function (item) {
-                    var slideRight = item.image.indexOf('/slide/') !== -1 && item.image.indexOf('-right.png') !== -1;
-                    return {
-                        name: path.basename(item.image, path.extname(item.image)),
-                        image: item.image.replace(file.orig.cwd, '../../common/png'),
-                        x: slideRight ? -99999 : 0,
-                        y: 0,
-                        width: item.value.width,
-                        height: item.value.height
-                    };
-                });
-
-                json2css.addTemplate('development', require('../lib/lessTemplate/development'));
                 var less = json2css(json, {
-                    format: 'development',
+                    format: 'production',
                     formatOpts: {
-                        className: path.basename(spriteDirectory),
+                        image: image,
+                        className: className,
+                        size: size,
                         cssClass: function (item) {
                             return '.' + item.name;
                         }
@@ -103,19 +58,27 @@ module.exports = function (grunt) {
 
                 grunt.file.write(file.dest, less);
                 grunt.log.writeln('Sprite less ' + file.dest.cyan + ' created.');
-
-                deferred.resolve();
-            }, function (err) {
-                deferred.reject(err);
+                defer.resolve();
             });
 
-            return deferred.promise;
+            return defer.promise.then(function () {
+                if (imageFilePath.indexOf('@2x') !== -1) {
+                    var defer = q.defer();
+                    var newImagePath = imageFilePath.replace('@2x', '');
+                    gm(imageFilePath).resize('50%').write(newImagePath, function (err) {
+                        if (err) {
+                            return defer.reject(err);
+                        }
+
+                        grunt.log.writeln('@1x image ' + newImagePath.cyan + ' created.');
+                        defer.resolve();
+                    });
+
+                    return defer.promise;
+                }
+            });
         });
 
-        q.all(filePromises).then(function (ret) {
-            done();
-        }, function (err) {
-            done(false);
-        });
+        q.all(promises, done);
     });
 };
