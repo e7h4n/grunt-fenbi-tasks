@@ -56,8 +56,8 @@ module.exports = function (grunt) {
                     }
                 });
 
-                grunt.file.write(file.dest, less);
-                grunt.log.writeln('Sprite less ' + file.dest.cyan + ' created.');
+                grunt.file.write(file.dest.replace('@2x', ''), less);
+                grunt.log.writeln('Sprite less ' + file.dest.replace('@2x', '').cyan + ' created.');
                 defer.resolve();
             });
 
