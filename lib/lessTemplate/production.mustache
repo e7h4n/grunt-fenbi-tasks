@@ -1,6 +1,7 @@
 .{{options.className}} {
     background: url('{{{options.image}}}') no-repeat;
 }
+
 {{#items}}
 .{{name}} {
   background-position: {{px.offset_x}} {{px.offset_y}};
@@ -8,3 +9,16 @@
   height: {{px.height}};
 }
 {{/items}}
+
+@media only screen and (max-width: 780px) and (-webkit-min-device-pixel-ratio: 1.5),
+  only screen and (max-width: 780px) and (-o-min-device-pixel-ratio: 3/2),
+  only screen and (max-width: 780px) and (min--moz-device-pixel-ratio: 1.5),
+  only screen and (max-width: 780px) and (min-device-pixel-ratio: 1.5) {
+
+  {{#retinaItems}}
+  .{{name}} {
+    background-position: {{px.offset_x}} {{px.offset_y}};
+    background-size: {{width}}px {{height}}px;
+  }
+  {{/retinaItems}}
+}
