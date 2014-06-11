@@ -23,7 +23,7 @@ module.exports = function (grunt) {
             var jsonFile = file.src[0];
             var json = JSON.parse(grunt.file.read(jsonFile));
 
-            var image = '../../common/img/' + json[Object.keys(json)[0]].image;
+            var image = './' + json[Object.keys(json)[0]].image;
             var className = path.basename(jsonFile, path.extname(jsonFile));
 
             if (className === 'slide') {
