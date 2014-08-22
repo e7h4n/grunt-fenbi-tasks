@@ -27,13 +27,13 @@ module.exports = function (grunt) {
         var urlPrefix = options.urlPrefix;
         var staticMap = options.staticMap;
         var staticJSON = options.staticJSON;
-        var root = options.root;
+        var root = path.resolve(options.root);
 
         var getStaticUrl = function (hash) {
             return urlPrefix + hash;
         };
 
-        var processedFile = _.memoize(function (fileAbsPath) {
+        var processedFile = _.memoize(function (fileAbsPath, replaceRoot) {
             if (['.css'].indexOf(path.extname(fileAbsPath)) === -1) {
                 return hashFile(fileAbsPath);
             }
@@ -57,6 +57,9 @@ module.exports = function (grunt) {
                     includePath = path.resolve(root, includePath);
                 } else {
                     includePath = path.resolve(path.dirname(fileAbsPath), includePath);
+                    if (replaceRoot) {
+                        includePath = includePath.replace(replaceRoot, root);
+                    }
                 }
 
                 var hash = processedFile(includePath);
@@ -66,6 +69,8 @@ module.exports = function (grunt) {
             grunt.file.write(fileAbsPath, newFileContent);
 
             return hashFile(fileAbsPath, newFileContent);
+        }, function (a) {
+            return a;
         });
 
         var hashList = {};
@@ -74,9 +79,9 @@ module.exports = function (grunt) {
             var filePath = file.src[0];
             var dest = path.normalize(file.orig.dest);
 
-            var hash = processedFile(path.resolve(filePath));
+            var hash = processedFile(path.resolve(filePath), path.resolve(file.orig.cwd));
 
-            hashList[filePath.replace(root, '')] = hash;
+            hashList[filePath.replace(file.orig.cwd, '')] = hash;
 
             var output = dest + hash;
             grunt.log.writeln('File ' + output.cyan + ' <-> ' + filePath.cyan + '.');
