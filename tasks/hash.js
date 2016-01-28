@@ -51,19 +51,22 @@ module.exports = function (grunt) {
                     return $0;
                 }
 
-                grunt.verbose.writeln('Found file include: ' + includePath);
+                var originFilePath = includePath.replace(/\?.*$/g, '').replace(/#.*$/g, '');
+                var filePath = originFilePath;
 
-                if (includePath.charAt(0) === '/') {
-                    includePath = path.resolve(root, includePath);
+                grunt.verbose.writeln('Found file include: ' + filePath);
+
+                if (filePath.charAt(0) === '/') {
+                    filePath = path.resolve(root, filePath);
                 } else {
-                    includePath = path.resolve(path.dirname(fileAbsPath), includePath);
+                    filePath = path.resolve(path.dirname(fileAbsPath), filePath);
                     if (replaceRoot) {
-                        includePath = includePath.replace(replaceRoot, root);
+                        filePath = filePath.replace(replaceRoot, root);
                     }
                 }
 
-                var hash = processedFile(includePath);
-                return hash ? 'url(' + $1 + getStaticUrl(hash) + $3 + ')' : $0;
+                var hash = processedFile(filePath);
+                return hash ? 'url(' + $1 + getStaticUrl(hash) + includePath.substr(originFilePath.length) + $3 + ')' : $0;
             });
 
             grunt.file.write(fileAbsPath, newFileContent);
